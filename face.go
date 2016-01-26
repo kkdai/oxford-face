@@ -6,12 +6,10 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
-	"net/http"
 )
 
 type Face struct {
-	SecretKey string
+	client *Client
 }
 
 const (
@@ -25,7 +23,7 @@ func NewFace(key string) *Face {
 	}
 
 	f := new(Face)
-	f.SecretKey = key
+	f.client = NewClient(key)
 	return f
 }
 
@@ -56,7 +54,7 @@ func (f *Face) DetectUrl(option *DetectParameters, fileUrl string) (FaceResponse
 	byteData := []byte(fmt.Sprintf(`{"url":"%s"}`, fileUrl))
 	data := bytes.NewBuffer(byteData)
 
-	return f.detect(option, data, false)
+	return f.detect(option, data, true)
 }
 
 func (f *Face) DetectFile(option *DetectParameters, filePath string) (FaceResponse, error) {
@@ -64,31 +62,20 @@ func (f *Face) DetectFile(option *DetectParameters, filePath string) (FaceRespon
 	if err != nil {
 		return FaceResponse{}, errors.New("File path err:" + err.Error())
 	}
-	return f.detect(option, data, true)
+	return f.detect(option, data, false)
 }
 
-func (f *Face) detect(option *DetectParameters, fileBuffer *bytes.Buffer, useFile bool) (FaceResponse, error) {
+func (f *Face) detect(option *DetectParameters, data *bytes.Buffer, useJson bool) (FaceResponse, error) {
 
-	client := &http.Client{}
-	r, _ := http.NewRequest("POST", getDetectURL(option), fileBuffer)
-	if useFile {
-		r.Header.Add("Content-Type", "application/octet-stream")
-	} else {
-		r.Header.Add("Content-Type", "application/json")
-	}
-	r.Header.Add("Ocp-Apim-Subscription-Key", f.SecretKey)
-
-	resp, _ := client.Do(r)
-	body, _ := ioutil.ReadAll(resp.Body)
-	if resp.StatusCode != http.StatusOK {
-		log.Println("Error happen! body:", string(body))
-		return FaceResponse{}, errors.New("Error on:" + string(body))
-	}
-
-	//json unmarshall
+	api := getDetectURL(option)
+	body, err := f.client.Connect(api, data, useJson)
 	fmt.Println(string(body))
+	if err != nil {
+		return FaceResponse{}, err
+	}
+
 	ret := FaceResponse{}
-	err := json.Unmarshal(body, &ret)
+	err = json.Unmarshal(body, &ret)
 	if err != nil {
 		return FaceResponse{}, err
 	}
