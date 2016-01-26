@@ -5,12 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
-	"mime/multipart"
 	"net/http"
-	"os"
 )
 
 type Face struct {
@@ -47,38 +44,14 @@ func getDetectURL(option *DetectParameters) string {
 }
 
 func getFileByteBuffer(path string) (*bytes.Buffer, error) {
-	// Prepare a form that you will submit to that URL.
-	var b bytes.Buffer
-	w := multipart.NewWriter(&b)
-	// Add your image file
-	f, err := os.Open(path)
+	fileData, err := ioutil.ReadFile(path)
+
 	if err != nil {
-		return nil, errors.New("File not exist!")
+		fmt.Println("File open err:", err)
+		return nil, err
 	}
-	fw, err := w.CreateFormFile("image", path)
-	if err != nil {
-		return nil, errors.New("Could not cteate temp files")
-
-	}
-	if _, err = io.Copy(fw, f); err != nil {
-		return nil, errors.New("Could not copy file content")
-
-	}
-	// Add the other fields
-	if fw, err = w.CreateFormField("key"); err != nil {
-		return nil, errors.New("Could not create form")
-
-	}
-	if _, err = fw.Write([]byte("KEY")); err != nil {
-		return nil, errors.New("Could not prepare key")
-
-	}
-	// Don't forget to close the multipart writer.
-	// If you don't close it, your request will be missing the terminating boundary.
-	w.Close()
-	return &b, nil
+	return bytes.NewBuffer(fileData), nil
 }
-
 func (f *Face) DetectUrl(option *DetectParameters, fileUrl string) (FaceResponse, error) {
 	byteData := []byte(fmt.Sprintf(`{"url":"%s"}`, fileUrl))
 	data := bytes.NewBuffer(byteData)
@@ -103,7 +76,6 @@ func (f *Face) detect(option *DetectParameters, fileBuffer *bytes.Buffer, useFil
 	} else {
 		r.Header.Add("Content-Type", "application/json")
 	}
-	//r.Header.Add("Content-Length", strconv.Itoa(len(fileffer)))
 	r.Header.Add("Ocp-Apim-Subscription-Key", f.SecretKey)
 
 	resp, _ := client.Do(r)
