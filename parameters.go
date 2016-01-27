@@ -1,5 +1,34 @@
 package face
 
+//Face Group parameter based on V1 space
+//
+type GroupParameter struct {
+	//A face ID array of candidate faces. Length of faceIds should between [1, 1000].
+	// Parameter faceListId and faceIds should not be provided at the same time.
+	FaceIds []string `json:"faceIds"`
+}
+
+//Face Similar parameter based on V1 space
+//
+type SimilarParameter struct {
+
+	//Query face. The faceId comes from the Face - Detect.
+	FaceId string `json:"faceId"`
+
+	//A candidate face list. Face list simply represents a list of faces, reference Face List -
+	// Create a Face List for more detail. faceListId and faceIds should not be provided at the same time.
+	FaceListId string `json:"faceListId"`
+
+	//A face ID array of candidate faces. Length of faceIds should between [1, 1000].
+	// Parameter faceListId and faceIds should not be provided at the same time.
+	FaceIds []string `json:"faceIds"`
+
+	//Optional parameter.
+	// Only top maxNumOfCandidatesReturned most similar faces will be returned.
+	// maxNumOfCandidatesReturned ranges between [1, 20], default to be 20.
+	MaxNumOfCandidatesReturned int `json:"maxNumOfCandidatesReturned"`
+}
+
 //Face Detect parameter based on V1 space
 //
 type DetectParameters struct {
@@ -7,13 +36,14 @@ type DetectParameters struct {
 	RceturnFaceIdcdd bool
 
 	//Return face landmarks of the detected faces or not. The default value is false.
-	PreturnFaceLandmarks bool
+	ReturnFaceLandmarks bool
 
 	//Analyze and return the one or more specified face attributes in the comma-separated string like "returnFaceAttributes=age,gender".
-	//Supported face attributes include age, gender, headPose, smile, and facialHair.
+	// Supported face attributes include age, gender, headPose, smile, and facialHair.
 	// Note that each face attribute analysis has additional computational and time cost.
 	ReturnFaceAttributes string
 }
+
 type FaceResponse []struct {
 	Faceid        string `json:"faceId"`
 	Facerectangle struct {

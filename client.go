@@ -17,12 +17,14 @@ type Client struct {
 	key string
 }
 
+// New oxford client based on key
 func NewClient(key string) *Client {
 	c := new(Client)
 	c.key = key
 	return c
 }
 
+// Connect with API url and data, return response byte or error if http.Status is not OK
 func (c *Client) Connect(url string, data *bytes.Buffer, useJson bool) ([]byte, error) {
 	client := &http.Client{}
 	r, _ := http.NewRequest("POST", url, data)
@@ -35,8 +37,18 @@ func (c *Client) Connect(url string, data *bytes.Buffer, useJson bool) ([]byte, 
 
 	r.Header.Add("Ocp-Apim-Subscription-Key", c.key)
 
-	resp, _ := client.Do(r)
-	body, _ := ioutil.ReadAll(resp.Body)
+	resp, err := client.Do(r)
+	if err != nil {
+		log.Println("er:", err)
+		return nil, err
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("er:", err)
+		return nil, err
+	}
+
 	if resp.StatusCode != http.StatusOK {
 		log.Println("Error happen! body:", string(body))
 		return body, errors.New("Error on:" + string(body))
