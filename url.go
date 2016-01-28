@@ -3,10 +3,13 @@ package face
 import "fmt"
 
 const (
-	FACE_URL    string = "https://api.projectoxford.ai/face/v1.0/"
-	DETECT_API  string = "detect"
-	SIMILAR_API string = "findsimilars"
-	GROUP_API   string = "group"
+	FACE_URL     string = "https://api.projectoxford.ai/face/v1.0/"
+	DETECT_API   string = "detect"
+	SIMILAR_API  string = "findsimilars"
+	GROUP_API    string = "group"
+	IDENTIFY_API string = "identify"
+	VERIFY_API   string = "verify"
+	FACELIST_API string = "facelists"
 )
 
 func getDetectURL(option *DetectParameters) string {
@@ -30,4 +33,16 @@ func getSimilarURL() string {
 
 func getGroupURL() string {
 	return FACE_URL + GROUP_API
+}
+
+func getIdentifyURL() string {
+	return FACE_URL + IDENTIFY_API
+}
+
+func getVerifyURL() string {
+	return FACE_URL + VERIFY_API
+}
+
+func getFacelistAdd(id string) string {
+	return FACE_URL + FACELIST_API + "/" + id
 }

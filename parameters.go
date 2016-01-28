@@ -1,5 +1,37 @@
 package face
 
+type FaceListAddParameter struct {
+	// Name of the created face list, maximum length is 128.
+	Name string `json:"name"`
+	// Optional user defined data for the face list. Length should not exceed 16KB.
+	UserData string `json:"userData"`
+}
+
+//Face verify parameter based on V1 space
+//
+type VerifyParameter struct {
+	//ID of one face.
+	FaceId1 string `json:"faceId1"`
+	//ID of two face.
+	FaceId2 string `json:"faceId2"`
+}
+
+//Face Identify parameter based on V1 space
+//
+type IdentifyParameter struct {
+	//A face ID array of candidate faces. Length of faceIds should between [1, 1000].
+	// Parameter faceListId and faceIds should not be provided at the same time.
+	FaceIds []string `json:"faceIds"`
+
+	//Target person group's ID
+	PersonGroupId string `json:"personGroupId"`
+
+	//Optional parameter.
+	// Only top maxNumOfCandidatesReturned most similar faces will be returned.
+	// maxNumOfCandidatesReturned ranges between [1, 20], default to be 20.
+	MaxNumOfCandidatesReturned int `json:"maxNumOfCandidatesReturned"`
+}
+
 //Face Group parameter based on V1 space
 //
 type GroupParameter struct {
@@ -177,6 +209,11 @@ type FaceResponse []struct {
 			Sideburns float64 `json:"sideburns"`
 		} `json:"facialHair"`
 	} `json:"faceAttributes"`
+}
+
+type SimilarResponse []struct {
+	Faceid     string  `json:"faceId"`
+	Confidence float64 `json:"confidence"`
 }
 
 func getBooleanString(b bool) string {

@@ -59,6 +59,25 @@ func TestFaceSimilar(t *testing.T) {
 		return
 	}
 
+	client := NewFace(API_KEY)
+	param := DetectParameters{RceturnFaceIdcdd: true, ReturnFaceLandmarks: true, ReturnFaceAttributes: "age,gender"}
+
+	var faceList []string
+	res1, err := client.DetectFile(&param, "test_data/verification1-1.jpg")
+	if err != nil {
+		t.Error("Error happen on face detect URL with option")
+	}
+	faceList = append(faceList, res1[0].Faceid)
+	res2, err := client.DetectFile(&param, "test_data/verification1-2.jpg")
+	if err != nil {
+		t.Error("Error happen on face detect URL with option")
+	}
+
+	faceList = append(faceList, res2[0].Faceid)
+	result, err := client.FindSimilarFromList(faceList[0], faceList, 20)
+	if err != nil {
+		t.Error("Error happen on similar:" + err.Error())
+	}
 }
 
 func TestFaceGroup(t *testing.T) {
