@@ -36,7 +36,7 @@ func getFileByteBuffer(path string) (*bytes.Buffer, error) {
 func (f *Face) detect(option *DetectParameters, data *bytes.Buffer, useJson bool) (FaceResponse, error) {
 
 	url := getDetectURL(option)
-	body, err := f.client.Connect(url, data, useJson)
+	body, err := f.client.Connect("POST", url, data, useJson)
 	if err != nil {
 		return FaceResponse{}, err
 	}
@@ -87,7 +87,7 @@ func (f *Face) FindSimilarFromList(targetID string, faceIdList []string, maxResu
 	if data == nil {
 		return nil, errors.New("Invalid parameter")
 	}
-	return f.client.Connect(api, data, true)
+	return f.client.Connect("POST", api, data, true)
 }
 
 // Find Face similarity from  a Face List ID, with max return result to limited return records.
@@ -102,7 +102,7 @@ func (f *Face) FindSimilarFromListId(targetID string, listId string, maxResult i
 	if data == nil {
 		return nil, errors.New("Invalid parameter")
 	}
-	return f.client.Connect(api, data, true)
+	return f.client.Connect("POST", api, data, true)
 }
 
 // Grouping a slice of faceID to a Face Group
@@ -116,7 +116,7 @@ func (f *Face) GroupFaces(faceIDs []string) ([]byte, error) {
 	}
 
 	url := getGroupURL()
-	return f.client.Connect(url, bytes.NewBuffer(data), true)
+	return f.client.Connect("POST", url, bytes.NewBuffer(data), true)
 }
 
 // Identify a list of face to check belong to which face group
@@ -132,7 +132,7 @@ func (f *Face) IdentifyFaces(faceIDs []string, faceGroup string, maxResult int) 
 	}
 
 	url := getIdentifyURL()
-	return f.client.Connect(url, bytes.NewBuffer(data), true)
+	return f.client.Connect("POST", url, bytes.NewBuffer(data), true)
 }
 
 // Compare input two face id to compute the similarity
@@ -148,5 +148,5 @@ func (f *Face) VerifyWithFace(face1 string, face2 string) ([]byte, error) {
 	}
 
 	url := getVerifyURL()
-	return f.client.Connect(url, bytes.NewBuffer(data), true)
+	return f.client.Connect("POST", url, bytes.NewBuffer(data), true)
 }

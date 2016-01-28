@@ -32,5 +32,5 @@ func (f *FaceList) Add(id, name, desc string) ([]byte, error) {
 	}
 
 	url := getFacelistAdd(id)
-	return f.client.Connect(url, bytes.NewBuffer(data), true)
+	return f.client.Connect("POST", url, bytes.NewBuffer(data), true)
 }

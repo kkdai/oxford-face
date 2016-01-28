@@ -77,6 +77,7 @@ func TestFaceSimilar(t *testing.T) {
 	result, err := client.FindSimilarFromList(faceList[0], faceList, 20)
 	if err != nil {
 		t.Error("Error happen on similar:" + err.Error())
+		log.Println("Ret:", result)
 	}
 }
 

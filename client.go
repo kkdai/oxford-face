@@ -25,9 +25,9 @@ func NewClient(key string) *Client {
 }
 
 // Connect with API url and data, return response byte or error if http.Status is not OK
-func (c *Client) Connect(url string, data *bytes.Buffer, useJson bool) ([]byte, error) {
+func (c *Client) Connect(mode string, url string, data *bytes.Buffer, useJson bool) ([]byte, error) {
 	client := &http.Client{}
-	r, _ := http.NewRequest("POST", url, data)
+	r, _ := http.NewRequest(mode, url, data)
 
 	if useJson {
 		r.Header.Add("Content-Type", JsonContent)
