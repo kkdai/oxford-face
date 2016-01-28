@@ -43,6 +43,10 @@ func getVerifyURL() string {
 	return FACE_URL + VERIFY_API
 }
 
-func getFacelistAdd(id string) string {
+func getFacelistID(id string) string {
 	return FACE_URL + FACELIST_API + "/" + id
+}
+
+func getFacelist() string {
+	return FACE_URL + FACELIST_API
 }

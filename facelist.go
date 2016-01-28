@@ -20,7 +20,8 @@ func NewFaceList(key string) *FaceList {
 	return f
 }
 
-func (f *FaceList) Add(id, name, desc string) ([]byte, error) {
+// Create a Face List ID
+func (f *FaceList) Create(id, name, desc string) ([]byte, error) {
 	var option FaceListAddParameter
 	option.Name = name
 	option.UserData = desc
@@ -31,6 +32,21 @@ func (f *FaceList) Add(id, name, desc string) ([]byte, error) {
 		return nil, err
 	}
 
-	url := getFacelistAdd(id)
-	return f.client.Connect("POST", url, bytes.NewBuffer(data), true)
+	url := getFacelistID(id)
+	return f.client.Connect("PUT", url, bytes.NewBuffer(data), true)
+}
+
+// Get specific Face list bu Face List ID
+func (f *FaceList) GetFaceListByID(id string) ([]byte, error) {
+	url := getFacelistID(id)
+	data := bytes.NewBuffer([]byte(""))
+
+	return f.client.Connect("GET", url, data, true)
+}
+
+// Get all Face list
+func (f *FaceList) GetFaceList() ([]byte, error) {
+	url := getFacelist()
+	data := bytes.NewBuffer([]byte(""))
+	return f.client.Connect("GET", url, data, true)
 }
