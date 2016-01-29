@@ -27,30 +27,25 @@ func TestFaceDetect(t *testing.T) {
 
 	client := NewFace(API_KEY)
 
-	res, err := client.DetectUrl(nil, "")
+	_, err := client.DetectUrl(nil, "")
 	if err == nil {
 		t.Error("Error happen on face detect URL: imput empty")
 	}
 
-	res, err = client.DetectUrl(nil, imageURL)
+	_, err = client.DetectUrl(nil, imageURL)
 	if err != nil {
 		t.Error("Error happen on face detect URL")
 	}
 
 	param := DetectParameters{RceturnFaceIdcdd: true, ReturnFaceLandmarks: true, ReturnFaceAttributes: "age,gender"}
-	res, err = client.DetectUrl(&param, imageURL)
+	_, err = client.DetectUrl(&param, imageURL)
 	if err != nil {
 		t.Error("Error happen on face detect URL with option")
 	}
 
-	res2, err := client.DetectFile(&param, "test_data/verification1-1.jpg")
+	_, err = client.DetectFile(&param, "test_data/verification1-1.jpg")
 	if err != nil {
 		t.Error("Error happen on face detect URL with option")
-	}
-
-	if res[0].Faceid == "" || res2[0].Faceid == "" {
-		t.Error("Error: Not found any face")
-		log.Println("Face detect:", res, res2)
 	}
 }
 
@@ -67,13 +62,23 @@ func TestFaceSimilar(t *testing.T) {
 	if err != nil {
 		t.Error("Error happen on face detect URL with option")
 	}
-	faceList = append(faceList, res1[0].Faceid)
+
+	face1 := NewFaceResponse(res1)
+	if face1 == nil {
+		t.Error("json result failed.")
+	}
+
+	faceList = append(faceList, (*face1)[0].Faceid)
 	res2, err := client.DetectFile(&param, "test_data/verification1-2.jpg")
 	if err != nil {
 		t.Error("Error happen on face detect URL with option")
 	}
+	face2 := NewFaceResponse(res2)
+	if face2 == nil {
+		t.Error("json result failed.")
+	}
 
-	faceList = append(faceList, res2[0].Faceid)
+	faceList = append(faceList, (*face2)[0].Faceid)
 	result, err := client.FindSimilarFromList(faceList[0], faceList, 20)
 	if err != nil {
 		t.Error("Error happen on similar:" + err.Error())

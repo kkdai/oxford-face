@@ -21,14 +21,14 @@ func NewFaceList(key string) *FaceList {
 }
 
 // Add a Face to FaceList by Face URL
-func (f *FaceList) AddFacetoFacelistByURL(faceurl, id, name, faceCurve string) ([]byte, error) {
+func (f *FaceList) AddFaceByURL(faceurl, id, name, faceCurve string) ([]byte, error) {
 	data := getUrlByteBuffer(faceurl)
 	url := getFacelistAddURL(id, name, faceCurve)
 	return f.client.Connect("PUT", url, data, true)
 }
 
 // Add a Face to FaceList by Image file path
-func (f *FaceList) AddFacetoFacelistByPath(facePath, id, name, faceCurve string) ([]byte, error) {
+func (f *FaceList) AddFaceByPath(facePath, id, name, faceCurve string) ([]byte, error) {
 	data, err := getFileByteBuffer(facePath)
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func (f *FaceList) AddFacetoFacelistByPath(facePath, id, name, faceCurve string)
 
 // Create a Face List ID
 func (f *FaceList) Create(id, name, desc string) ([]byte, error) {
-	var option FaceListAddParameter
+	var option InfoParameter
 	option.Name = name
 	option.UserData = desc
 
@@ -55,8 +55,8 @@ func (f *FaceList) Create(id, name, desc string) ([]byte, error) {
 }
 
 // Update Face List by ID
-func (f *FaceList) UpdateFaceListByID(id, name, desc string) ([]byte, error) {
-	var option FaceListAddParameter
+func (f *FaceList) Update(id, name, desc string) ([]byte, error) {
+	var option InfoParameter
 	option.Name = name
 	option.UserData = desc
 
@@ -71,14 +71,14 @@ func (f *FaceList) UpdateFaceListByID(id, name, desc string) ([]byte, error) {
 }
 
 // Delete a Face List by ID
-func (f *FaceList) DeleteFaceListByID(id string) ([]byte, error) {
+func (f *FaceList) Delete(id string) ([]byte, error) {
 	data := bytes.NewBuffer([]byte(""))
 	url := getFacelistIdURL(id)
 	return f.client.Connect("DELETE", url, data, true)
 }
 
 // Delete a Face from Face List
-func (f *FaceList) DeleteFaceFromListByID(faceid, listid string) ([]byte, error) {
+func (f *FaceList) DeleteFace(faceid, listid string) ([]byte, error) {
 	var option FaceListDeleteFaceParameter
 	option.FaceListId = listid
 	option.PersistedFaceId = faceid
@@ -94,7 +94,7 @@ func (f *FaceList) DeleteFaceFromListByID(faceid, listid string) ([]byte, error)
 }
 
 // Get specific Face list bu Face List ID
-func (f *FaceList) GetFaceListByID(id string) ([]byte, error) {
+func (f *FaceList) Get(id string) ([]byte, error) {
 	url := getFacelistIdURL(id)
 	data := bytes.NewBuffer([]byte(""))
 
@@ -102,7 +102,7 @@ func (f *FaceList) GetFaceListByID(id string) ([]byte, error) {
 }
 
 // Get all Face list
-func (f *FaceList) GetFaceList() ([]byte, error) {
+func (f *FaceList) List() ([]byte, error) {
 	url := getFacelistURL()
 	data := bytes.NewBuffer([]byte(""))
 	return f.client.Connect("GET", url, data, true)

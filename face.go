@@ -21,33 +21,22 @@ func NewFace(key string) *Face {
 	return f
 }
 
-func (f *Face) detect(option *DetectParameters, data *bytes.Buffer, useJson bool) (FaceResponse, error) {
-
+func (f *Face) detect(option *DetectParameters, data *bytes.Buffer, useJson bool) ([]byte, error) {
 	url := getDetectURL(option)
-	body, err := f.client.Connect("POST", url, data, useJson)
-	if err != nil {
-		return FaceResponse{}, err
-	}
-
-	ret := FaceResponse{}
-	err = json.Unmarshal(body, &ret)
-	if err != nil {
-		return FaceResponse{}, err
-	}
-	return ret, nil
+	return f.client.Connect("POST", url, data, useJson)
 }
 
 //Detect face with input URL
-func (f *Face) DetectUrl(option *DetectParameters, url string) (FaceResponse, error) {
+func (f *Face) DetectUrl(option *DetectParameters, url string) ([]byte, error) {
 	data := getUrlByteBuffer(url)
 	return f.detect(option, data, true)
 }
 
 //Detect face with input image file path
-func (f *Face) DetectFile(option *DetectParameters, filePath string) (FaceResponse, error) {
+func (f *Face) DetectFile(option *DetectParameters, filePath string) ([]byte, error) {
 	data, err := getFileByteBuffer(filePath)
 	if err != nil {
-		return FaceResponse{}, errors.New("File path err:" + err.Error())
+		return nil, errors.New("File path err:" + err.Error())
 	}
 	return f.detect(option, data, false)
 }

@@ -20,13 +20,13 @@ func NewPerson(key string) *Person {
 	return f
 }
 
-func (p *Person) AddPersonFaceByURL(faceUrl, gId, pId, userData, targeFace string) ([]byte, error) {
+func (p *Person) AddFaceByURL(faceUrl, gId, pId, userData, targeFace string) ([]byte, error) {
 	data := getUrlByteBuffer(faceUrl)
 	url := getPersonAddURL(gId, pId, userData, targeFace)
 	return p.client.Connect("PUT", url, data, true)
 }
 
-func (p *Person) AddPersonFaceByPath(path, gId, pId, userData, targeFace string) ([]byte, error) {
+func (p *Person) AddFaceByPath(path, gId, pId, userData, targeFace string) ([]byte, error) {
 	data, err := getFileByteBuffer(path)
 	if err != nil {
 		return nil, err
@@ -36,8 +36,8 @@ func (p *Person) AddPersonFaceByPath(path, gId, pId, userData, targeFace string)
 }
 
 // Create a Person Group with nam and desc
-func (p *Person) CreatePerson(gId, name, desc string) ([]byte, error) {
-	var option FaceListAddParameter
+func (p *Person) Create(gId, name, desc string) ([]byte, error) {
+	var option InfoParameter
 	option.Name = name
 	option.UserData = desc
 
@@ -53,38 +53,38 @@ func (p *Person) CreatePerson(gId, name, desc string) ([]byte, error) {
 }
 
 // Delte A Person from A PersonGroup
-func (p *Person) DeletePersonFromGroup(gId, pId string) ([]byte, error) {
+func (p *Person) Delete(gId, pId string) ([]byte, error) {
 	data := bytes.NewBuffer([]byte(""))
 	url := getPersonPidURL(gId, pId)
 	return p.client.Connect("DELETE", url, data, true)
 }
 
 // Delte A Person Face from A PersonGroup/PersonId
-func (p *Person) DeleteFaceFromPerson(gId, pId, fId string) ([]byte, error) {
+func (p *Person) DeleteFace(gId, pId, fId string) ([]byte, error) {
 	data := bytes.NewBuffer([]byte(""))
 	url := getPersonFidURL(gId, pId, fId)
 	return p.client.Connect("DELETE", url, data, true)
 }
 
 // Retrieve a person's information, including registered faces, name and userData.
-func (f *FaceList) GetPerson(gId, pId string) ([]byte, error) {
+func (p *Person) Get(gId, pId string) ([]byte, error) {
 	url := getPersonPidURL(gId, pId)
 	data := bytes.NewBuffer([]byte(""))
 
-	return f.client.Connect("GET", url, data, true)
+	return p.client.Connect("GET", url, data, true)
 }
 
 //Retrieve information about a face (specified by face ID, person ID and its belonging person group ID).
-func (f *FaceList) GetPersonFace(gId, pId, fId string) ([]byte, error) {
+func (p *Person) GetFace(gId, pId, fId string) ([]byte, error) {
 	url := getPersonPidURL(gId, pId)
 	data := bytes.NewBuffer([]byte(""))
 
-	return f.client.Connect("GET", url, data, true)
+	return p.client.Connect("GET", url, data, true)
 }
 
 //List all people in a person group, and retrieve person information (including person ID, name, user data and registered faces of the person).
-func (p *Person) ListPersonInGroup(gId string) ([]byte, error) {
-	url := getPersonsInGidURL(gId)
+func (p *Person) List(gId string) ([]byte, error) {
+	url := getPersonGidURL(gId)
 	data := bytes.NewBuffer([]byte(""))
 
 	return p.client.Connect("GET", url, data, true)
@@ -92,8 +92,8 @@ func (p *Person) ListPersonInGroup(gId string) ([]byte, error) {
 }
 
 // Update a person's name or userData field.
-func (p *Person) UpdatePersonData(gId, pId, updateName, updateDesc string) ([]byte, error) {
-	var option FaceListAddParameter
+func (p *Person) Update(gId, pId, updateName, updateDesc string) ([]byte, error) {
+	var option InfoParameter
 	option.Name = updateName
 	option.UserData = updateDesc
 
@@ -108,7 +108,7 @@ func (p *Person) UpdatePersonData(gId, pId, updateName, updateDesc string) ([]by
 }
 
 // Update a person face's userData field.
-func (p *Person) UpdateFaceData(gId, pId, fId, updateDesc string) ([]byte, error) {
+func (p *Person) UpdateFace(gId, pId, fId, updateDesc string) ([]byte, error) {
 	data := getUserDataByteBuffer(updateDesc)
 	url := getPersonFidURL(gId, pId, fId)
 	return p.client.Connect("PATCH", url, data, true)

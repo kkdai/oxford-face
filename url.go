@@ -3,14 +3,17 @@ package face
 import "fmt"
 
 const (
-	FACE_URL     string = "https://api.projectoxford.ai/face/v1.0/"
-	DETECT_API   string = "detect"
-	SIMILAR_API  string = "findsimilars"
-	GROUP_API    string = "group"
-	IDENTIFY_API string = "identify"
-	VERIFY_API   string = "verify"
-	FACELIST_API string = "facelists"
-	PERSON_API   string = "persongroups"
+	FACE_URL        string = "https://api.projectoxford.ai/face/v1.0/"
+	DETECT_API      string = "detect"
+	SIMILAR_API     string = "findsimilars"
+	GROUP_API       string = "group"
+	IDENTIFY_API    string = "identify"
+	VERIFY_API      string = "verify"
+	FACELIST_API    string = "facelists"
+	PERSONGROUP_API string = "persongroups"
+	PERSONS_API     string = "persons"
+	TRAINING_API    string = "training"
+	TRAIN_API       string = "train"
 )
 
 func getDetectURL(option *DetectParameters) string {
@@ -63,13 +66,29 @@ func getFacelistAddURL(id, userData, targetFace string) string {
 	return opURL
 }
 
-//https://api.projectoxford.ai/face/v1.0/persongroups/{personGroupId}/
-func getPersonGidURL(gId string) string {
-	return FACE_URL + PERSON_API + "/" + gId
+//https://api.projectoxford.ai/face/v1.0/persongroups
+func getPersonGroupURL() string {
+	return FACE_URL + PERSONGROUP_API
 }
 
-func getPersonsInGidURL(gId string) string {
-	return FACE_URL + PERSON_API + "/" + gId + "/persons"
+//https://api.projectoxford.ai/face/v1.0/persongroups/{personGroupId}/
+func getPersonGroupGidURL(gId string) string {
+	return FACE_URL + PERSONGROUP_API + "/" + gId
+}
+
+//https://api.projectoxford.ai/face/v1.0/persongroups/{personGroupId}/training
+func getPersonGroupTrainingGidURL(gId string) string {
+	return FACE_URL + PERSONGROUP_API + "/" + gId + "/" + TRAINING_API
+}
+
+//https://api.projectoxford.ai/face/v1.0/persongroups/{personGroupId}/train
+func getPersonGroupTrainURL(gId string) string {
+	return FACE_URL + PERSONGROUP_API + "/" + gId + "/" + TRAIN_API
+}
+
+//https://api.projectoxford.ai/face/v1.0/persongroups/{personGroupId}/persons
+func getPersonGidURL(gId string) string {
+	return getPersonGroupGidURL(gId) + "/" + PERSONS_API
 }
 
 //https://api.projectoxford.ai/face/v1.0/persongroups/{personGroupId}/persons/{personId}
@@ -79,7 +98,7 @@ func getPersonPidURL(gId, pId string) string {
 
 // https://api.projectoxford.ai/face/v1.0/persongroups/{personGroupId}/persons/{personId}/persistedFaces/{persistedFaceId}
 func getPersonFidURL(gId, pId, fId string) string {
-	return getPersonPidURL(gId, pId) + "/persistedFaces/" + fId
+	return getPersonPidURL(gId, pId) + "/" + PERSONS_API + "/" + fId
 }
 
 // https://api.projectoxford.ai/face/v1.0/persongroups/{personGroupId}/persons/{personId}/persistedFaces[?userData][&targetFace]

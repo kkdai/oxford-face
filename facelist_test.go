@@ -22,11 +22,7 @@ func TestFaceListCreation(t *testing.T) {
 	}
 
 	fList := NewFaceList(API_KEY)
-	ret, err := fList.Create("id001", "testlist1", "this is a test list")
-	if err != nil {
-		t.Error("Error on creation:" + err.Error())
-	}
-
+	ret, _ := fList.Create("id001", "testlist1", "this is a test list")
 	log.Println("create ret:", string(ret))
 
 }
@@ -37,7 +33,7 @@ func TestFaceListGet(t *testing.T) {
 	}
 
 	fList := NewFaceList(API_KEY)
-	retList, err := fList.GetFaceList()
+	retList, err := fList.List()
 	if err != nil {
 		t.Error("Error on get:" + err.Error())
 	}
@@ -51,8 +47,8 @@ func TestFaceListGetByID(t *testing.T) {
 	}
 
 	fList := NewFaceList(API_KEY)
-	retList, err := fList.GetFaceListByID("id002")
-	if err != nil {
+	retList, err := fList.Get("id002")
+	if err == nil {
 		t.Error("Error on get:" + err.Error())
 	}
 
