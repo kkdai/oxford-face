@@ -10,6 +10,7 @@ const (
 	IDENTIFY_API string = "identify"
 	VERIFY_API   string = "verify"
 	FACELIST_API string = "facelists"
+	PERSON_API   string = "persongroups"
 )
 
 func getDetectURL(option *DetectParameters) string {
@@ -43,10 +44,51 @@ func getVerifyURL() string {
 	return FACE_URL + VERIFY_API
 }
 
-func getFacelistID(id string) string {
+func getFacelistIdURL(id string) string {
 	return FACE_URL + FACELIST_API + "/" + id
 }
 
-func getFacelist() string {
+func getFacelistURL() string {
 	return FACE_URL + FACELIST_API
+}
+
+func getFacelistAddURL(id, userData, targetFace string) string {
+	base := getFacelistIdURL(id)
+
+	opURL := fmt.Sprintf("%s?persistedFaces?userData=%s&targetFace=%s",
+		base,
+		userData,
+		targetFace)
+
+	return opURL
+}
+
+//https://api.projectoxford.ai/face/v1.0/persongroups/{personGroupId}/
+func getPersonGidURL(gId string) string {
+	return FACE_URL + PERSON_API + "/" + gId
+}
+
+func getPersonsInGidURL(gId string) string {
+	return FACE_URL + PERSON_API + "/" + gId + "/persons"
+}
+
+//https://api.projectoxford.ai/face/v1.0/persongroups/{personGroupId}/persons/{personId}
+func getPersonPidURL(gId, pId string) string {
+	return getPersonGidURL(gId) + "/persons/" + pId
+}
+
+// https://api.projectoxford.ai/face/v1.0/persongroups/{personGroupId}/persons/{personId}/persistedFaces/{persistedFaceId}
+func getPersonFidURL(gId, pId, fId string) string {
+	return getPersonPidURL(gId, pId) + "/persistedFaces/" + fId
+}
+
+// https://api.projectoxford.ai/face/v1.0/persongroups/{personGroupId}/persons/{personId}/persistedFaces[?userData][&targetFace]
+func getPersonAddURL(gId, pId, userData, targetFace string) string {
+	base := getPersonPidURL(gId, pId)
+	opURL := fmt.Sprintf("%s/persistedFaces?userData=%s&targetFace=%s",
+		base,
+		userData,
+		targetFace)
+
+	return opURL
 }

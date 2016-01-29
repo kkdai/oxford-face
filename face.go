@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
-	"io/ioutil"
 	"log"
 )
 
@@ -21,16 +19,6 @@ func NewFace(key string) *Face {
 	f := new(Face)
 	f.client = NewClient(key)
 	return f
-}
-
-func getFileByteBuffer(path string) (*bytes.Buffer, error) {
-	fileData, err := ioutil.ReadFile(path)
-
-	if err != nil {
-		log.Println("File open err:", err)
-		return nil, err
-	}
-	return bytes.NewBuffer(fileData), nil
 }
 
 func (f *Face) detect(option *DetectParameters, data *bytes.Buffer, useJson bool) (FaceResponse, error) {
@@ -50,10 +38,8 @@ func (f *Face) detect(option *DetectParameters, data *bytes.Buffer, useJson bool
 }
 
 //Detect face with input URL
-func (f *Face) DetectUrl(option *DetectParameters, fileUrl string) (FaceResponse, error) {
-	byteData := []byte(fmt.Sprintf(`{"url":"%s"}`, fileUrl))
-	data := bytes.NewBuffer(byteData)
-
+func (f *Face) DetectUrl(option *DetectParameters, url string) (FaceResponse, error) {
+	data := getUrlByteBuffer(url)
 	return f.detect(option, data, true)
 }
 

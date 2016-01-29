@@ -20,6 +20,24 @@ func NewFaceList(key string) *FaceList {
 	return f
 }
 
+// Add a Face to FaceList by Face URL
+func (f *FaceList) AddFacetoFacelistByURL(faceurl, id, name, faceCurve string) ([]byte, error) {
+	data := getUrlByteBuffer(faceurl)
+	url := getFacelistAddURL(id, name, faceCurve)
+	return f.client.Connect("PUT", url, data, true)
+}
+
+// Add a Face to FaceList by Image file path
+func (f *FaceList) AddFacetoFacelistByPath(facePath, id, name, faceCurve string) ([]byte, error) {
+	data, err := getFileByteBuffer(facePath)
+	if err != nil {
+		return nil, err
+	}
+
+	url := getFacelistAddURL(id, name, faceCurve)
+	return f.client.Connect("PUT", url, data, true)
+}
+
 // Create a Face List ID
 func (f *FaceList) Create(id, name, desc string) ([]byte, error) {
 	var option FaceListAddParameter
@@ -32,7 +50,7 @@ func (f *FaceList) Create(id, name, desc string) ([]byte, error) {
 		return nil, err
 	}
 
-	url := getFacelistID(id)
+	url := getFacelistIdURL(id)
 	return f.client.Connect("PUT", url, bytes.NewBuffer(data), true)
 }
 
@@ -48,14 +66,14 @@ func (f *FaceList) UpdateFaceListByID(id, name, desc string) ([]byte, error) {
 		return nil, err
 	}
 
-	url := getFacelistID(id)
+	url := getFacelistIdURL(id)
 	return f.client.Connect("PATCH", url, bytes.NewBuffer(data), true)
 }
 
 // Delete a Face List by ID
 func (f *FaceList) DeleteFaceListByID(id string) ([]byte, error) {
 	data := bytes.NewBuffer([]byte(""))
-	url := getFacelistID(id)
+	url := getFacelistIdURL(id)
 	return f.client.Connect("DELETE", url, data, true)
 }
 
@@ -71,13 +89,13 @@ func (f *FaceList) DeleteFaceFromListByID(faceid, listid string) ([]byte, error)
 		return nil, err
 	}
 
-	url := getFacelistID(listid)
+	url := getFacelistIdURL(listid)
 	return f.client.Connect("DELETE", url, bytes.NewBuffer(data), true)
 }
 
 // Get specific Face list bu Face List ID
 func (f *FaceList) GetFaceListByID(id string) ([]byte, error) {
-	url := getFacelistID(id)
+	url := getFacelistIdURL(id)
 	data := bytes.NewBuffer([]byte(""))
 
 	return f.client.Connect("GET", url, data, true)
@@ -85,7 +103,7 @@ func (f *FaceList) GetFaceListByID(id string) ([]byte, error) {
 
 // Get all Face list
 func (f *FaceList) GetFaceList() ([]byte, error) {
-	url := getFacelist()
+	url := getFacelistURL()
 	data := bytes.NewBuffer([]byte(""))
 	return f.client.Connect("GET", url, data, true)
 }
