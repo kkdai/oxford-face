@@ -71,9 +71,6 @@ func main() {
 }
 ```
 
-Check [example](example/main.go) for more detail.
-
-
 Contribute
 ---------------
 
