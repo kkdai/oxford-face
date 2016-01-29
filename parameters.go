@@ -1,5 +1,16 @@
 package face
 
+// Delete a Face from Face List parameter
+//
+type FaceListDeleteFaceParameter struct {
+	// Valid character is letter in lower case or digit or '-' or '_', maximum length is 64.
+	FaceListId string `json:"faceListId"`
+	// Valid character is letter in lower case or digit or '-' or '_', maximum length is 64.
+	PersistedFaceId string `json:"persistedFaceId"`
+}
+
+// Face List add parameter
+//
 type FaceListAddParameter struct {
 	// Name of the created face list, maximum length is 128.
 	Name string `json:"name"`
