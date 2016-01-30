@@ -171,7 +171,7 @@ type GroupResponse struct {
 }
 
 func NewGroupResponse(raw []byte) *GroupResponse {
-	ret := new(SimilarResponse)
+	ret := new(GroupResponse)
 	err := json.Unmarshal(raw, ret)
 	if err != nil {
 		log.Println("json unmarshal err:", err)
