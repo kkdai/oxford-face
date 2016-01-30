@@ -164,3 +164,18 @@ func NewSimilarResponse(raw []byte) *SimilarResponse {
 	}
 	return ret
 }
+
+type GroupResponse struct {
+	Groups     [][]string `json:"groups"`
+	Messygroup []string   `json:"messyGroup"`
+}
+
+func NewGroupResponse(raw []byte) *GroupResponse {
+	ret := new(SimilarResponse)
+	err := json.Unmarshal(raw, ret)
+	if err != nil {
+		log.Println("json unmarshal err:", err)
+		return nil
+	}
+	return ret
+}

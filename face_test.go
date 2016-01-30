@@ -11,6 +11,20 @@ import (
 
 var API_KEY string
 
+const (
+	// The same man
+	//id: 4541fc12-55f2-4eae-b548-2310188fdb8f
+	imageURL1_1 string = "https://oxfordportal.blob.core.windows.net/face/demov1/verification1-1.jpg"
+	//id: e71470cc-64f3-4cda-91e3-a8e7d9f99d48
+	imageURL1_2 string = "https://oxfordportal.blob.core.windows.net/face/demov1/verification1-2.jpg"
+
+	// The same woman
+	//id: 5e407f1f-5d0b-463b-990c-6076bb32d1b3
+	imageURL2_1 string = "https://oxfordportal.blob.core.windows.net/face/demov1/verification2-1.jpg"
+	//id: 4b9e1489-3450-4d67-ac1b-ba48a8bcb68c
+	imageURL2_2 string = "https://oxfordportal.blob.core.windows.net/face/demov1/verification2-2.jpg"
+)
+
 func init() {
 	API_KEY = os.Getenv("MSFT_KEY")
 	if API_KEY == "" {
@@ -23,8 +37,6 @@ func TestFaceDetect(t *testing.T) {
 		return
 	}
 
-	imageURL := "https://oxfordportal.blob.core.windows.net/face/demov1/verification1-1.jpg"
-
 	client := NewFace(API_KEY)
 
 	_, err := client.DetectUrl(nil, "")
@@ -32,21 +44,53 @@ func TestFaceDetect(t *testing.T) {
 		t.Error("Error happen on face detect URL: imput empty")
 	}
 
-	_, err = client.DetectUrl(nil, imageURL)
+	_, err = client.DetectUrl(nil, imageURL1_1)
 	if err != nil {
 		t.Error("Error happen on face detect URL")
 	}
 
 	param := DetectParameters{RceturnFaceIdcdd: true, ReturnFaceLandmarks: true, ReturnFaceAttributes: "age,gender"}
-	_, err = client.DetectUrl(&param, imageURL)
+	res1, err := client.DetectUrl(&param, imageURL1_1)
 	if err != nil {
 		t.Error("Error happen on face detect URL with option")
 	}
 
-	_, err = client.DetectFile(&param, "test_data/verification1-1.jpg")
+	ret := NewFaceResponse(res1)
+	log.Println("Url1-1 detect:", *ret)
+
+	res1, err = client.DetectUrl(&param, imageURL1_2)
 	if err != nil {
 		t.Error("Error happen on face detect URL with option")
 	}
+
+	ret = NewFaceResponse(res1)
+	log.Println("Url1-2 detect:", *ret)
+
+	//	woman
+	res1, err = client.DetectUrl(&param, imageURL2_1)
+	if err != nil {
+		t.Error("Error happen on face detect URL with option")
+	}
+
+	ret = NewFaceResponse(res1)
+	log.Println("Url2-1 detect:", *ret)
+
+	res1, err = client.DetectUrl(&param, imageURL2_2)
+	if err != nil {
+		t.Error("Error happen on face detect URL with option")
+	}
+
+	ret = NewFaceResponse(res1)
+	log.Println("Url2-2 detect:", *ret)
+
+	res2, err := client.DetectFile(&param, "test_data/verification1-1.jpg")
+	if err != nil {
+		t.Error("Error happen on face detect URL with option")
+	}
+
+	ret2 := NewFaceResponse(res2)
+	log.Println("File detect:", *ret2)
+
 }
 
 func TestFaceSimilar(t *testing.T) {
@@ -91,4 +135,16 @@ func TestFaceGroup(t *testing.T) {
 		return
 	}
 
+	var faceList []string
+	faceList = append(faceList, "4541fc12-55f2-4eae-b548-2310188fdb8f")
+	faceList = append(faceList, "e71470cc-64f3-4cda-91e3-a8e7d9f99d48")
+	faceList = append(faceList, "5e407f1f-5d0b-463b-990c-6076bb32d1b3")
+	faceList = append(faceList, "4b9e1489-3450-4d67-ac1b-ba48a8bcb68c")
+
+	client := NewFace(API_KEY)
+	res, err := client.GroupFaces(faceList)
+	if err != nil {
+		t.Error("Grouping error:", err)
+	}
+	log.Println("Grouping:", string(res))
 }
