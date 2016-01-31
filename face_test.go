@@ -19,10 +19,10 @@ const (
 	imageURL1_2 string = "https://oxfordportal.blob.core.windows.net/face/demov1/verification1-2.jpg"
 
 	// The same woman
-	//id: 5e407f1f-5d0b-463b-990c-6076bb32d1b3
-	imageURL2_1 string = "https://oxfordportal.blob.core.windows.net/face/demov1/verification2-1.jpg"
-	//id: 4b9e1489-3450-4d67-ac1b-ba48a8bcb68c
-	imageURL2_2 string = "https://oxfordportal.blob.core.windows.net/face/demov1/verification2-2.jpg"
+	//id: 075afb27-00e5-465b-b8ee-726369bf2396
+	imageURL2_1 string = "https://oxfordportal.blob.core.windows.net/face/demov1/verification3-1.jpg"
+	//id: 06b04805-0a97-425d-a12b-36301f91797e
+	imageURL2_2 string = "https://oxfordportal.blob.core.windows.net/face/demov1/verification3-2.jpg"
 )
 
 func init() {
@@ -138,8 +138,8 @@ func TestFaceGroup(t *testing.T) {
 	var faceList []string
 	faceList = append(faceList, "4541fc12-55f2-4eae-b548-2310188fdb8f")
 	faceList = append(faceList, "e71470cc-64f3-4cda-91e3-a8e7d9f99d48")
-	faceList = append(faceList, "5e407f1f-5d0b-463b-990c-6076bb32d1b3")
-	faceList = append(faceList, "4b9e1489-3450-4d67-ac1b-ba48a8bcb68c")
+	faceList = append(faceList, "075afb27-00e5-465b-b8ee-726369bf2396")
+	faceList = append(faceList, "06b04805-0a97-425d-a12b-36301f91797e")
 
 	client := NewFace(API_KEY)
 	res, err := client.GroupFaces(faceList)
@@ -147,4 +147,20 @@ func TestFaceGroup(t *testing.T) {
 		t.Error("Grouping error:", err)
 	}
 	log.Println("Grouping:", string(res))
+}
+
+func TestFaceVerify(t *testing.T) {
+	if API_KEY == "" {
+		return
+	}
+
+	source := "e71470cc-64f3-4cda-91e3-a8e7d9f99d48"
+	target := "4541fc12-55f2-4eae-b548-2310188fdb8f"
+
+	client := NewFace(API_KEY)
+	res, err := client.VerifyWithFace(source, target)
+	if err != nil {
+		t.Error("Verify error:", err)
+	}
+	log.Println("Verify:", string(res))
 }
