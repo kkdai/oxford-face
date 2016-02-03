@@ -35,7 +35,7 @@ func TestFaceListGet(t *testing.T) {
 	fList := NewFaceList(API_KEY)
 	retList, err := fList.List()
 	if err != nil {
-		t.Error("Error on get:" + err.Error())
+		t.Error("Error on get:" + err.Err.Error())
 	}
 
 	log.Println("Get list ret:", string(retList))
@@ -49,7 +49,7 @@ func TestFaceListGetByID(t *testing.T) {
 	fList := NewFaceList(API_KEY)
 	retList, err := fList.Get("id002")
 	if err == nil {
-		t.Error("Error on get:" + err.Error())
+		t.Error("Error on get:" + err.Err.Error())
 	}
 
 	log.Println("Get list id002 ret:", string(retList))

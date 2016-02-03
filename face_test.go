@@ -125,7 +125,7 @@ func TestFaceSimilar(t *testing.T) {
 	faceList = append(faceList, (*face2)[0].Faceid)
 	result, err := client.FindSimilarFromList(faceList[0], faceList, 20)
 	if err != nil {
-		t.Error("Error happen on similar:" + err.Error())
+		t.Error("Error happen on similar:" + err.Err.Error())
 		log.Println("Ret:", result)
 	}
 }
