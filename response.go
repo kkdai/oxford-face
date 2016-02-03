@@ -5,6 +5,13 @@ import (
 	"log"
 )
 
+//Storage all HTTP response include http.response code and error code
+type ErrorResponse struct {
+	ErrorCode int
+	Err       error
+}
+
+//Face Response struct
 type FaceResponse []struct {
 	Faceid        string `json:"faceId"`
 	Facerectangle struct {

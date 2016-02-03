@@ -21,22 +21,22 @@ func NewFace(key string) *Face {
 	return f
 }
 
-func (f *Face) detect(option *DetectParameters, data *bytes.Buffer, useJson bool) ([]byte, error) {
+func (f *Face) detect(option *DetectParameters, data *bytes.Buffer, useJson bool) ([]byte, *ErrorResponse) {
 	url := getDetectURL(option)
 	return f.client.Connect("POST", url, data, useJson)
 }
 
 //Detect face with input URL
-func (f *Face) DetectUrl(option *DetectParameters, url string) ([]byte, error) {
+func (f *Face) DetectUrl(option *DetectParameters, url string) ([]byte, *ErrorResponse) {
 	data := getUrlByteBuffer(url)
 	return f.detect(option, data, true)
 }
 
 //Detect face with input image file path
-func (f *Face) DetectFile(option *DetectParameters, filePath string) ([]byte, error) {
+func (f *Face) DetectFile(option *DetectParameters, filePath string) ([]byte, *ErrorResponse) {
 	data, err := getFileByteBuffer(filePath)
 	if err != nil {
-		return nil, errors.New("File path err:" + err.Error())
+		return nil, &ErrorResponse{Err: errors.New("File path err:" + err.Error())}
 	}
 	return f.detect(option, data, false)
 }
@@ -51,7 +51,7 @@ func getSimilarData(option SimilarParameter) *bytes.Buffer {
 }
 
 // Find Face similarity from  a Face List, with max return result to limited return records.
-func (f *Face) FindSimilarFromList(targetID string, faceIdList []string, maxResult int) ([]byte, error) {
+func (f *Face) FindSimilarFromList(targetID string, faceIdList []string, maxResult int) ([]byte, *ErrorResponse) {
 	var option SimilarParameter
 	option.FaceId = targetID
 	option.FaceIds = faceIdList
@@ -60,13 +60,13 @@ func (f *Face) FindSimilarFromList(targetID string, faceIdList []string, maxResu
 	data := getSimilarData(option)
 	api := getSimilarURL()
 	if data == nil {
-		return nil, errors.New("Invalid parameter")
+		return nil, &ErrorResponse{Err: errors.New("Invalid parameter")}
 	}
 	return f.client.Connect("POST", api, data, true)
 }
 
 // Find Face similarity from  a Face List ID, with max return result to limited return records.
-func (f *Face) FindSimilarFromListId(targetID string, listId string, maxResult int) ([]byte, error) {
+func (f *Face) FindSimilarFromListId(targetID string, listId string, maxResult int) ([]byte, *ErrorResponse) {
 	var option SimilarParameter
 	option.FaceId = targetID
 	option.FaceListId = listId
@@ -75,19 +75,19 @@ func (f *Face) FindSimilarFromListId(targetID string, listId string, maxResult i
 	data := getSimilarData(option)
 	api := getSimilarURL()
 	if data == nil {
-		return nil, errors.New("Invalid parameter")
+		return nil, &ErrorResponse{Err: errors.New("Invalid parameter")}
 	}
 	return f.client.Connect("POST", api, data, true)
 }
 
 // Grouping a slice of faceID to a Face Group
-func (f *Face) GroupFaces(faceIDs []string) ([]byte, error) {
+func (f *Face) GroupFaces(faceIDs []string) ([]byte, *ErrorResponse) {
 	var option GroupParameter
 	option.FaceIds = faceIDs
 	data, err := json.Marshal(option)
 	if err != nil {
 		log.Println("Error happen on json marshal:", err)
-		return nil, err
+		return nil, &ErrorResponse{Err: err}
 	}
 
 	url := getGroupURL()
@@ -95,7 +95,7 @@ func (f *Face) GroupFaces(faceIDs []string) ([]byte, error) {
 }
 
 // Identify a list of face to check belong to which face group
-func (f *Face) IdentifyFaces(faceIDs []string, faceGroup string, maxResult int) ([]byte, error) {
+func (f *Face) IdentifyFaces(faceIDs []string, faceGroup string, maxResult int) ([]byte, *ErrorResponse) {
 	var option IdentifyParameter
 	option.FaceIds = faceIDs
 	option.PersonGroupId = faceGroup
@@ -103,7 +103,7 @@ func (f *Face) IdentifyFaces(faceIDs []string, faceGroup string, maxResult int) 
 	data, err := json.Marshal(option)
 	if err != nil {
 		log.Println("Error happen on json marshal:", err)
-		return nil, err
+		return nil, &ErrorResponse{Err: err}
 	}
 
 	url := getIdentifyURL()
@@ -111,7 +111,7 @@ func (f *Face) IdentifyFaces(faceIDs []string, faceGroup string, maxResult int) 
 }
 
 // Compare input two face id to compute the similarity
-func (f *Face) VerifyWithFace(face1 string, face2 string) ([]byte, error) {
+func (f *Face) VerifyWithFace(face1 string, face2 string) ([]byte, *ErrorResponse) {
 	var option VerifyParameter
 	option.FaceId1 = face1
 	option.FaceId2 = face2
@@ -119,7 +119,7 @@ func (f *Face) VerifyWithFace(face1 string, face2 string) ([]byte, error) {
 	data, err := json.Marshal(option)
 	if err != nil {
 		log.Println("Error happen on json marshal:", err)
-		return nil, err
+		return nil, &ErrorResponse{Err: err}
 	}
 
 	url := getVerifyURL()

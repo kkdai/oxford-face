@@ -21,17 +21,17 @@ func NewFaceList(key string) *FaceList {
 }
 
 // Add a Face to FaceList by Face URL
-func (f *FaceList) AddFaceByURL(faceurl, id, name, faceCurve string) ([]byte, error) {
+func (f *FaceList) AddFaceByURL(faceurl, id, name, faceCurve string) ([]byte, *ErrorResponse) {
 	data := getUrlByteBuffer(faceurl)
 	url := getFacelistAddURL(id, name, faceCurve)
 	return f.client.Connect("PUT", url, data, true)
 }
 
 // Add a Face to FaceList by Image file path
-func (f *FaceList) AddFaceByPath(facePath, id, name, faceCurve string) ([]byte, error) {
+func (f *FaceList) AddFaceByPath(facePath, id, name, faceCurve string) ([]byte, *ErrorResponse) {
 	data, err := getFileByteBuffer(facePath)
 	if err != nil {
-		return nil, err
+		return nil, &ErrorResponse{Err: err}
 	}
 
 	url := getFacelistAddURL(id, name, faceCurve)
@@ -39,7 +39,7 @@ func (f *FaceList) AddFaceByPath(facePath, id, name, faceCurve string) ([]byte, 
 }
 
 // Create a Face List ID
-func (f *FaceList) Create(id, name, desc string) ([]byte, error) {
+func (f *FaceList) Create(id, name, desc string) ([]byte, *ErrorResponse) {
 	var option InfoParameter
 	option.Name = name
 	option.UserData = desc
@@ -47,7 +47,7 @@ func (f *FaceList) Create(id, name, desc string) ([]byte, error) {
 	data, err := json.Marshal(option)
 	if err != nil {
 		log.Println("Error happen on json marshal:", err)
-		return nil, err
+		return nil, &ErrorResponse{Err: err}
 	}
 
 	url := getFacelistIdURL(id)
@@ -55,7 +55,7 @@ func (f *FaceList) Create(id, name, desc string) ([]byte, error) {
 }
 
 // Update Face List by ID
-func (f *FaceList) Update(id, name, desc string) ([]byte, error) {
+func (f *FaceList) Update(id, name, desc string) ([]byte, *ErrorResponse) {
 	var option InfoParameter
 	option.Name = name
 	option.UserData = desc
@@ -63,7 +63,7 @@ func (f *FaceList) Update(id, name, desc string) ([]byte, error) {
 	data, err := json.Marshal(option)
 	if err != nil {
 		log.Println("Error happen on json marshal:", err)
-		return nil, err
+		return nil, &ErrorResponse{Err: err}
 	}
 
 	url := getFacelistIdURL(id)
@@ -71,14 +71,14 @@ func (f *FaceList) Update(id, name, desc string) ([]byte, error) {
 }
 
 // Delete a Face List by ID
-func (f *FaceList) Delete(id string) ([]byte, error) {
+func (f *FaceList) Delete(id string) ([]byte, *ErrorResponse) {
 	data := bytes.NewBuffer([]byte(""))
 	url := getFacelistIdURL(id)
 	return f.client.Connect("DELETE", url, data, true)
 }
 
 // Delete a Face from Face List
-func (f *FaceList) DeleteFace(faceid, listid string) ([]byte, error) {
+func (f *FaceList) DeleteFace(faceid, listid string) ([]byte, *ErrorResponse) {
 	var option FaceListDeleteFaceParameter
 	option.FaceListId = listid
 	option.PersistedFaceId = faceid
@@ -86,7 +86,7 @@ func (f *FaceList) DeleteFace(faceid, listid string) ([]byte, error) {
 	data, err := json.Marshal(option)
 	if err != nil {
 		log.Println("Error happen on json marshal:", err)
-		return nil, err
+		return nil, &ErrorResponse{Err: err}
 	}
 
 	url := getFacelistIdURL(listid)
@@ -94,7 +94,7 @@ func (f *FaceList) DeleteFace(faceid, listid string) ([]byte, error) {
 }
 
 // Get specific Face list bu Face List ID
-func (f *FaceList) Get(id string) ([]byte, error) {
+func (f *FaceList) Get(id string) ([]byte, *ErrorResponse) {
 	url := getFacelistIdURL(id)
 	data := bytes.NewBuffer([]byte(""))
 
@@ -102,7 +102,7 @@ func (f *FaceList) Get(id string) ([]byte, error) {
 }
 
 // Get all Face list
-func (f *FaceList) List() ([]byte, error) {
+func (f *FaceList) List() ([]byte, *ErrorResponse) {
 	url := getFacelistURL()
 	data := bytes.NewBuffer([]byte(""))
 	return f.client.Connect("GET", url, data, true)
