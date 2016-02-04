@@ -56,7 +56,7 @@ func TestFaceDetect(t *testing.T) {
 	}
 
 	ret := NewFaceResponse(res1)
-	log.Println("Url1-1 detect:", *ret)
+	log.Println("Url1-1 detect:", ret)
 
 	res1, err = client.DetectUrl(&param, imageURL1_2)
 	if err != nil {
@@ -64,7 +64,7 @@ func TestFaceDetect(t *testing.T) {
 	}
 
 	ret = NewFaceResponse(res1)
-	log.Println("Url1-2 detect:", *ret)
+	log.Println("Url1-2 detect:", ret)
 
 	//	woman
 	res1, err = client.DetectUrl(&param, imageURL2_1)
@@ -73,7 +73,7 @@ func TestFaceDetect(t *testing.T) {
 	}
 
 	ret = NewFaceResponse(res1)
-	log.Println("Url2-1 detect:", *ret)
+	log.Println("Url2-1 detect:", ret)
 
 	res1, err = client.DetectUrl(&param, imageURL2_2)
 	if err != nil {
@@ -81,7 +81,7 @@ func TestFaceDetect(t *testing.T) {
 	}
 
 	ret = NewFaceResponse(res1)
-	log.Println("Url2-2 detect:", *ret)
+	log.Println("Url2-2 detect:", ret)
 
 	res2, err := client.DetectFile(&param, "test_data/verification1-1.jpg")
 	if err != nil {
@@ -89,7 +89,7 @@ func TestFaceDetect(t *testing.T) {
 	}
 
 	ret2 := NewFaceResponse(res2)
-	log.Println("File detect:", *ret2)
+	log.Println("File detect:", ret2)
 
 }
 
@@ -112,7 +112,7 @@ func TestFaceSimilar(t *testing.T) {
 		t.Error("json result failed.")
 	}
 
-	faceList = append(faceList, (*face1)[0].Faceid)
+	faceList = append(faceList, face1[0].Faceid)
 	res2, err := client.DetectFile(&param, "test_data/verification1-2.jpg")
 	if err != nil {
 		t.Error("Error happen on face detect URL with option")
@@ -122,7 +122,7 @@ func TestFaceSimilar(t *testing.T) {
 		t.Error("json result failed.")
 	}
 
-	faceList = append(faceList, (*face2)[0].Faceid)
+	faceList = append(faceList, face2[0].Faceid)
 	result, err := client.FindSimilarFromList(faceList[0], faceList, 20)
 	if err != nil {
 		t.Error("Error happen on similar:" + err.Err.Error())

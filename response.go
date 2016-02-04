@@ -147,9 +147,9 @@ type FaceResponse []struct {
 	} `json:"faceAttributes"`
 }
 
-func NewFaceResponse(raw []byte) *FaceResponse {
-	ret := new(FaceResponse)
-	err := json.Unmarshal(raw, ret)
+func NewFaceResponse(raw []byte) FaceResponse {
+	ret := FaceResponse{}
+	err := json.Unmarshal(raw, &ret)
 	if err != nil {
 		log.Println("json unmarshal err:", err)
 		return nil
