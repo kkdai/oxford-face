@@ -128,6 +128,7 @@ func TestFaceSimilar(t *testing.T) {
 		t.Error("Error happen on similar:" + err.Err.Error())
 		log.Println("Ret:", result)
 	}
+	log.Println("Ret:", string(result))
 }
 
 func TestFaceGroup(t *testing.T) {

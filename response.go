@@ -162,9 +162,9 @@ type SimilarResponse []struct {
 	Confidence float64 `json:"confidence"`
 }
 
-func NewSimilarResponse(raw []byte) *SimilarResponse {
-	ret := new(SimilarResponse)
-	err := json.Unmarshal(raw, ret)
+func NewSimilarResponse(raw []byte) SimilarResponse {
+	ret := SimilarResponse{}
+	err := json.Unmarshal(raw, &ret)
 	if err != nil {
 		log.Println("json unmarshal err:", err)
 		return nil
@@ -183,6 +183,21 @@ func NewGroupResponse(raw []byte) *GroupResponse {
 	if err != nil {
 		log.Println("json unmarshal err:", err)
 		return nil
+	}
+	return ret
+}
+
+type VerifyResponse struct {
+	IsIdentical bool    `json:"isIdentical"`
+	Confidence  float64 `json:"confidence"`
+}
+
+func NewVerifyResponse(raw []byte) VerifyResponse {
+	ret := VerifyResponse{}
+	err := json.Unmarshal(raw, &ret)
+	if err != nil {
+		log.Println("json unmarshal err:", err)
+		return ret
 	}
 	return ret
 }
